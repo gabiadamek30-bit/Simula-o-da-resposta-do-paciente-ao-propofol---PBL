@@ -1,0 +1,37 @@
+name = "PropofolPBL"
+uuid = "4a9c9d82-48c2-44c5-bb3e-c14b45a9f556"
+version = "0.1.0"
+authors = ["gabiadamek30-bit"]
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+ForwardDiff = "f6369f11-7733-5829-9624-2563aa707210"
+LineSearches = "d3d80556-e9d4-5f37-9878-2ab0fcc64255"
+LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
+NeoPKPD = "aa42e64f-7c0c-4f7e-9a43-9f30a48e1a32"
+Optim = "429524aa-4258-5aef-a3af-852621145aeb"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[sources]
+NeoPKPD = {path = "external/NeoPKPD/packages/core"}
+
+[compat]
+CSV = "0.10.17"
+DataFrames = "1.8.2"
+Dates = "1.11.0"
+ForwardDiff = "1.4.6"
+LineSearches = "7.5.1"
+LinearAlgebra = "1.13.0"
+Optim = "1.13.3"
+Plots = "1.41.7"
+Statistics = "1.11.5"
+julia = "1.11"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
