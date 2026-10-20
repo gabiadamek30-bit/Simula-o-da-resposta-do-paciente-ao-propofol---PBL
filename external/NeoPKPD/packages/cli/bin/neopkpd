@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+CLI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+exec julia --project="$CLI_DIR" "$CLI_DIR/src/NeoPKPDCLI.jl" "$@"

@@ -1,0 +1,220 @@
+# Installation Qualification (IQ) Protocol
+
+**Document ID:** NEOPKPD-IQ-001
+**Version:** 1.0
+**Effective Date:** 2026-01-10
+**Regulatory Reference:** FDA 21 CFR Part 11, GAMP 5
+
+---
+
+## 1. Purpose
+
+This Installation Qualification (IQ) protocol documents the verification that NeoPKPD has been installed correctly and meets all installation specifications. IQ ensures that the software and all supporting components are properly installed and configured as specified.
+
+## 2. Scope
+
+This protocol applies to:
+- NeoPKPD Core Julia package
+- NeoPKPD Python bindings
+- All required dependencies
+- Development and production environments
+
+## 3. Responsibilities
+
+| Role | Responsibility |
+|------|----------------|
+| QA Lead | Protocol approval and final sign-off |
+| System Administrator | Installation execution |
+| Validation Engineer | IQ execution and documentation |
+
+## 4. Prerequisites
+
+Before executing this IQ protocol, ensure:
+
+1. Target system meets minimum requirements:
+   - Julia 1.9+ installed
+   - Python 3.9+ installed (if using Python bindings)
+   - Minimum 4GB RAM
+   - Minimum 1GB disk space
+
+2. Required documentation available:
+   - System requirements specification
+   - Installation instructions
+   - Configuration requirements
+
+## 5. Installation Verification Tests
+
+### IQ-001: Julia Version Verification
+
+**Objective:** Verify Julia installation meets minimum version requirements.
+
+**Procedure:**
+```bash
+julia --version
+```
+
+**Expected Result:** Julia version >= 1.9.0
+
+**Acceptance Criteria:** PASS if version >= 1.9.0, FAIL otherwise
+
+---
+
+### IQ-002: NeoPKPD Package Installation
+
+**Objective:** Verify NeoPKPD Core package is properly installed.
+
+**Procedure:**
+```julia
+using NeoPKPD
+println(NEOPKPD_VERSION)
+```
+
+**Expected Result:** Version string printed (e.g., "0.1.0")
+
+**Acceptance Criteria:** PASS if version displayed without error
+
+---
+
+### IQ-003: Dependency Verification
+
+**Objective:** Verify all required dependencies are installed.
+
+**Procedure:**
+```julia
+using Pkg
+Pkg.status()
+```
+
+**Expected Result:** All dependencies listed with valid versions:
+- DifferentialEquations.jl
+- SciMLBase.jl
+- JSON.jl
+- SHA.jl (for compliance module)
+- UUIDs.jl (for compliance module)
+
+**Acceptance Criteria:** PASS if all dependencies present
+
+---
+
+### IQ-004: Schema Version Verification
+
+**Objective:** Verify artifact schema version is current.
+
+**Procedure:**
+```julia
+using NeoPKPD
+println(ARTIFACT_SCHEMA_VERSION)
+```
+
+**Expected Result:** "1.1.0"
+
+**Acceptance Criteria:** PASS if version matches specification
+
+---
+
+### IQ-005: Compliance Module Initialization
+
+**Objective:** Verify compliance module loads correctly.
+
+**Procedure:**
+```julia
+using NeoPKPD
+config = get_compliance_config()
+println(config.level)
+```
+
+**Expected Result:** `COMPLIANCE_STANDARD` (default configuration)
+
+**Acceptance Criteria:** PASS if default configuration loads
+
+---
+
+### IQ-006: Environment Capture Capability
+
+**Objective:** Verify environment snapshot can be captured.
+
+**Procedure:**
+```julia
+using NeoPKPD
+env = capture_environment()
+println("Julia: ", env.julia_version)
+println("NeoPKPD: ", env.neopkpd_version)
+```
+
+**Expected Result:** Environment snapshot created with valid values
+
+**Acceptance Criteria:** PASS if snapshot contains expected fields
+
+---
+
+### IQ-007: Integrity Hash Computation
+
+**Objective:** Verify SHA-256 hashing is operational.
+
+**Procedure:**
+```julia
+using NeoPKPD
+hash = compute_content_hash("test data")
+println(hash)
+```
+
+**Expected Result:** 64-character hexadecimal SHA-256 hash
+
+**Acceptance Criteria:** PASS if valid hash computed
+
+---
+
+### IQ-008: Python Bindings Installation (Optional)
+
+**Objective:** Verify Python bindings are installed (if applicable).
+
+**Procedure:**
+```python
+import neopkpd
+print(neopkpd.__version__)
+```
+
+**Expected Result:** Version string printed
+
+**Acceptance Criteria:** PASS if version displayed, SKIP if Python not required
+
+---
+
+## 6. Results Summary
+
+| Test ID | Description | Result | Tester | Date |
+|---------|-------------|--------|--------|------|
+| IQ-001 | Julia Version | ☐ PASS ☐ FAIL | | |
+| IQ-002 | Package Installation | ☐ PASS ☐ FAIL | | |
+| IQ-003 | Dependency Verification | ☐ PASS ☐ FAIL | | |
+| IQ-004 | Schema Version | ☐ PASS ☐ FAIL | | |
+| IQ-005 | Compliance Module | ☐ PASS ☐ FAIL | | |
+| IQ-006 | Environment Capture | ☐ PASS ☐ FAIL | | |
+| IQ-007 | Integrity Hashing | ☐ PASS ☐ FAIL | | |
+| IQ-008 | Python Bindings | ☐ PASS ☐ FAIL ☐ SKIP | | |
+
+## 7. Deviations and Corrective Actions
+
+| Deviation # | Test ID | Description | Corrective Action | Status |
+|-------------|---------|-------------|-------------------|--------|
+| | | | | |
+
+## 8. Conclusion
+
+☐ All IQ tests PASSED - Installation is qualified
+☐ Deviations documented and resolved
+☐ IQ Protocol execution COMPLETE
+
+---
+
+## 9. Approval Signatures
+
+| Role | Name | Signature | Date |
+|------|------|-----------|------|
+| Executed By | | | |
+| Reviewed By | | | |
+| Approved By | | | |
+
+---
+
+*Document generated by NeoPKPD Compliance Module*

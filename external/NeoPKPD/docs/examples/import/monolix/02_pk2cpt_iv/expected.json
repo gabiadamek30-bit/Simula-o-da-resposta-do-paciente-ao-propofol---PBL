@@ -1,0 +1,20 @@
+{
+  "model": "TwoCompIVBolus",
+  "params": {
+    "CL": 5.0,
+    "V1": 10.0,
+    "Q": 2.0,
+    "V2": 20.0
+  },
+  "iiv": {
+    "kind": "LogNormalIIV",
+    "omegas": {
+      "CL": 0.09,
+      "V1": 0.0625
+    }
+  },
+  "error": {
+    "kind": "Proportional",
+    "sigma": 0.15
+  }
+}

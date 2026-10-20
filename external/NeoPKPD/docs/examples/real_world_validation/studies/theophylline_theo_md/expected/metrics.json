@@ -1,0 +1,86 @@
+[
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.9262006772218592,
+    "dose_events": 7,
+    "id": 1,
+    "wt": 79.6
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.4287273107946137,
+    "dose_events": 7,
+    "id": 2,
+    "wt": 72.4
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.0025325065485704,
+    "dose_events": 7,
+    "id": 3,
+    "wt": 70.5
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.5339446640723304,
+    "dose_events": 7,
+    "id": 4,
+    "wt": 72.7
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.4496333647442963,
+    "dose_events": 7,
+    "id": 5,
+    "wt": 54.6
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.8084556957836009,
+    "dose_events": 7,
+    "id": 6,
+    "wt": 80.0
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.6724348601984884,
+    "dose_events": 7,
+    "id": 7,
+    "wt": 64.6
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.1431497032453102,
+    "dose_events": 7,
+    "id": 8,
+    "wt": 70.5
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.6570577152408048,
+    "dose_events": 7,
+    "id": 9,
+    "wt": 86.4
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.698421651989587,
+    "dose_events": 7,
+    "id": 10,
+    "wt": 58.2
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.3779804693648081,
+    "dose_events": 7,
+    "id": 11,
+    "wt": 65.0
+  },
+  {
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse": 1.3696585046912315,
+    "dose_events": 7,
+    "id": 12,
+    "wt": 60.5
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "model": {
+    "kind": "MichaelisMentenElimination",
+    "name": "michaelis_menten_example",
+    "params": {
+      "Vmax": 15.0,
+      "Km": 2.5,
+      "V": 50.0
+    },
+    "doses": [
+      {"time": 0.0, "amount": 500.0}
+    ]
+  },
+  "grid": {
+    "t0": 0.0,
+    "t1": 48.0,
+    "saveat": [0.0, 0.5, 1.0, 2.0, 4.0, 6.0, 8.0, 12.0, 18.0, 24.0, 36.0, 48.0]
+  },
+  "solver": {
+    "alg": "Tsit5",
+    "reltol": 1e-10,
+    "abstol": 1e-12,
+    "maxiters": 10000000
+  }
+}

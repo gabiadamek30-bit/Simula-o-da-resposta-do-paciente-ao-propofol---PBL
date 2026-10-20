@@ -1,0 +1,42 @@
+{
+  "population_spec": {
+    "base_model_spec": {
+      "kind": "OneCompIVBolus",
+      "name": "population_iiv_example",
+      "params": {
+        "CL": 5.0,
+        "V": 50.0
+      },
+      "doses": [
+        {
+          "time": 0.0,
+          "amount": 100.0
+        }
+      ]
+    },
+    "iiv": {
+      "kind": "LogNormalIIV",
+      "omegas": {
+        "CL": 0.3,
+        "V": 0.2
+      },
+      "seed": 12345,
+      "n": 100
+    },
+    "iov": null,
+    "covariate_model": null,
+    "covariates": []
+  },
+  "grid": {
+    "t0": 0.0,
+    "t1": 24.0,
+    "saveat": [
+      0.0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0, 24.0
+    ]
+  },
+  "solver": {
+    "alg": "Tsit5",
+    "reltol": 1e-8,
+    "abstol": 1e-10
+  }
+}

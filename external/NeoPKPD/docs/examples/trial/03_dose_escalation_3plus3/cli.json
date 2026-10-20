@@ -1,0 +1,25 @@
+{
+  "escalation_trial": {
+    "name": "Phase I FIH Dose Escalation",
+    "design": {
+      "type": "3plus3",
+      "dose_levels": [10.0, 25.0, 50.0, 100.0, 200.0],
+      "starting_dose": 10.0,
+      "max_dlt_rate": 0.33,
+      "cohort_size": 3,
+      "max_subjects": 30
+    },
+    "dlt_probabilities": {
+      "10.0": 0.05,
+      "25.0": 0.10,
+      "50.0": 0.18,
+      "100.0": 0.35,
+      "200.0": 0.55
+    },
+    "regimen": {
+      "frequency": "qd",
+      "duration_days": 28
+    },
+    "seed": 42
+  }
+}

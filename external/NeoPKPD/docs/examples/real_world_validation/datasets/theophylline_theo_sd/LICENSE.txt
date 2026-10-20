@@ -1,0 +1,10 @@
+Dataset: theo_sd (theophylline)
+Source package: nlmixr2data
+License: GPL (>= 3)
+
+This dataset is redistributed in this repository under the terms of GPL (>= 3),
+consistent with the upstream nlmixr2data package license.
+
+See:
+- CRAN: nlmixr2data (License GPL (>= 3))
+- Upstream repository: nlmixr2/nlmixr2data

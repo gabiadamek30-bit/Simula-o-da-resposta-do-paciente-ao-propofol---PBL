@@ -1,0 +1,39 @@
+$PROBLEM One-compartment IV bolus PK model
+$INPUT ID TIME DV AMT MDV EVID
+$DATA ../data.csv IGNORE=@
+
+$SUBROUTINES ADVAN1 TRANS2
+
+$PK
+  TVCL = THETA(1)
+  TVV  = THETA(2)
+
+  CL = TVCL * EXP(ETA(1))
+  V  = TVV  * EXP(ETA(2))
+
+  S1 = V
+
+$ERROR
+  IPRED = F
+  W = IPRED * THETA(3)
+  IF(W.EQ.0) W = 1
+  IRES = DV - IPRED
+  IWRES = IRES / W
+  Y = IPRED + W * ERR(1)
+
+$THETA
+  (0, 5.0)    ; CL (L/h)
+  (0, 50.0)   ; V (L)
+  (0, 0.10)   ; Proportional error
+
+$OMEGA BLOCK(2)
+  0.09        ; IIV CL (CV ~30%)
+  0.03 0.0625 ; IIV V (CV ~25%)
+
+$SIGMA
+  1 FIX       ; Proportional residual
+
+$ESTIMATION METHOD=1 INTER MAXEVAL=9999 PRINT=10 NOABORT
+$COVARIANCE PRINT=E
+
+$TABLE ID TIME IPRED IWRES CWRES NOPRINT ONEHEADER FILE=sdtab001

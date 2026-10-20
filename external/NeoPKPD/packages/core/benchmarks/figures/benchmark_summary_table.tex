@@ -1,0 +1,21 @@
+% Auto-generated benchmark table
+% Include in paper with: \input{figures/benchmark_summary_table.tex}
+
+\begin{table}[!ht]
+\centering
+\footnotesize
+\caption{Benchmark results (mean ± SD in milliseconds, N=100 runs)}
+\label{tab:benchmarks}
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+\textbf{Task} & \textbf{NeoPKPD (Julia)} & \textbf{NeoPKPD (Python)} & \textbf{nlmixr2} & \textbf{mrgsolve} \\
+\midrule
+Simulation (OneCompIV) & 0.18 ± 0.05 & — & — & 0.75 ± 0.24 \\
+Simulation (TwoCompIV) & 0.22 ± 0.06 & — & — & 0.80 ± 0.22 \\
+Simulation (MichaelisMenten) & 1.04 ± 1.07 & — & — & 0.80 ± 0.24 \\
+Population (TwoCompIV) & 4.75 ± 1.24 & — & — & 3.51 ± 1.23 \\
+Pkpd (DirectEmax) & — & — & — & 0.57 ± 0.22 \\
+Pkpd (IndirectResponse) & — & — & — & 0.55 ± 0.23 \\
+\bottomrule
+\end{tabular}
+\end{table}

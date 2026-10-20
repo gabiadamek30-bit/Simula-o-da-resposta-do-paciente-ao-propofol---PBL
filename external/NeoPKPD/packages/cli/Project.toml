@@ -1,0 +1,15 @@
+name = "NeoPKPDCLI"
+uuid = "b2bd7c55-1a1a-4a2e-8f7a-8f7e9b6d2d71"
+authors = ["NeoPKPD contributors"]
+version = "0.1.1"
+
+[deps]
+ArgParse = "c7e460c6-2fb9-53a9-8c5b-16f535851c63"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
+NeoPKPD = "aa42e64f-7c0c-4f7e-9a43-9f30a48e1a32"
+
+[compat]
+julia = "1.10"
+ArgParse = "1"
+JSON = "1"
+

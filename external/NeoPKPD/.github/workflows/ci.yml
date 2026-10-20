@@ -1,0 +1,803 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  JULIA_NUM_THREADS: 2
+  JULIA_VERSION: "1.10"
+  PYTHON_VERSION: "3.11"
+  # Prevent juliacall segfaults in CI by enabling signal handling
+  PYTHON_JULIACALL_HANDLE_SIGNALS: "yes"
+
+jobs:
+  # ===========================================================================
+  # Stage 1: Fast Checks (No Julia Required)
+  # ===========================================================================
+
+  lint-python:
+    name: Python Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install linting tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff black isort mypy
+
+      - name: Check formatting with black
+        run: |
+          black --check --diff packages/python/neopkpd/
+        continue-on-error: true
+
+      - name: Check imports with isort
+        run: |
+          isort --check-only --diff packages/python/neopkpd/
+        continue-on-error: true
+
+      - name: Lint with ruff
+        run: |
+          ruff check packages/python/neopkpd/ --output-format=github
+        continue-on-error: true
+
+  python-unit-tests:
+    name: Python Unit Tests (No Julia)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: packages/python/pyproject.toml
+
+      - name: Install Python package
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov pytest-xdist
+          cd packages/python && pip install -e ".[dev]"
+
+      - name: Run trial module tests
+        run: |
+          cd packages/python
+          python -m pytest tests/test_trial.py -v --tb=short -x
+
+      - name: Run NCA unit tests (pure Python)
+        run: |
+          cd packages/python
+          python -m pytest tests/test_nca.py -v --tb=short -x -k "not integration"
+        continue-on-error: true
+
+  # ===========================================================================
+  # Stage 2: Julia Core Tests
+  # ===========================================================================
+
+  julia-core-tests:
+    name: Julia Core Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    needs: [lint-python]
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Julia
+        uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - name: Cache Julia packages
+        uses: julia-actions/cache@v2
+        with:
+          cache-name: julia-pkgs-${{ matrix.os }}
+
+      - name: Install NeoPKPD
+        shell: bash
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: Run Julia unit tests
+        shell: bash
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.test()'
+
+      - name: Test model definitions
+        shell: bash
+        run: |
+          julia --project=packages/core -e '
+            using NeoPKPD
+            using Test
+
+            # Test all PK models
+            @testset "PK Models" begin
+              @test OneCompIVBolus() isa ModelKind
+              @test OneCompOralFirstOrder() isa ModelKind
+              @test TwoCompIVBolus() isa ModelKind
+              @test TwoCompOral() isa ModelKind
+              @test ThreeCompIVBolus() isa ModelKind
+              @test TransitAbsorption() isa ModelKind
+              @test MichaelisMentenElimination() isa ModelKind
+            end
+
+            # Test all PD models (note: these are PDModelKind, not ModelKind)
+            @testset "PD Models" begin
+              @test DirectEmax() isa PDModelKind
+              @test SigmoidEmax() isa PDModelKind
+              @test BiophaseEquilibration() isa PDModelKind
+              @test IndirectResponseTurnover() isa PDModelKind
+            end
+
+            println("All model definitions OK")
+          '
+
+  # ===========================================================================
+  # Stage 3: Feature-Specific Tests
+  # ===========================================================================
+
+  test-infusion:
+    name: IV Infusion Tests
+    runs-on: ubuntu-latest
+    needs: [julia-core-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install dependencies
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: Test IV infusion
+        run: |
+          julia --project=packages/core -e '
+            using NeoPKPD
+            using Test
+
+            @testset "IV Infusion" begin
+              # Test DoseEvent with duration
+              dose_bolus = DoseEvent(0.0, 100.0)
+              dose_infusion = DoseEvent(0.0, 100.0, 1.0)
+
+              @test dose_bolus.duration == 0.0
+              @test dose_infusion.duration == 1.0
+
+              # Test infusion simulation
+              params = OneCompIVBolusParams(5.0, 50.0)
+              spec = ModelSpec(OneCompIVBolus(), "infusion_test", params, [dose_infusion])
+              grid = SimGrid(0.0, 24.0, collect(0.0:0.5:24.0))
+              solver = SolverSpec(:Tsit5, 1e-10, 1e-12, 10_000_000)
+
+              result = simulate(spec, grid, solver)
+              @test length(result.t) == length(grid.saveat)
+              @test all(result.observations[:conc] .>= 0)
+
+              # Peak should occur around end of infusion
+              peak_idx = argmax(result.observations[:conc])
+              @test result.t[peak_idx] >= 0.5 && result.t[peak_idx] <= 2.0
+
+              println("IV Infusion tests passed")
+            end
+          '
+
+  test-population:
+    name: Population & Covariate Tests
+    runs-on: ubuntu-latest
+    needs: [julia-core-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install dependencies
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: Test population simulation
+        run: |
+          julia --project=packages/core -e '
+            using NeoPKPD
+            using Test
+
+            @testset "Population Simulation" begin
+              params = OneCompIVBolusParams(5.0, 50.0)
+              doses = [DoseEvent(0.0, 100.0)]
+              spec = ModelSpec(OneCompIVBolus(), "pop_test", params, doses)
+
+              iiv = IIVSpec(LogNormalIIV(), Dict(:CL => 0.3, :V => 0.2), UInt64(12345), 50)
+              pop_spec = PopulationSpec(spec, iiv, nothing, nothing, IndividualCovariates[])
+
+              grid = SimGrid(0.0, 24.0, collect(0.0:1.0:24.0))
+              solver = SolverSpec(:Tsit5, 1e-8, 1e-10, 10_000_000)
+
+              result = simulate_population(pop_spec, grid, solver)
+
+              @test length(result.individuals) == 50
+              @test length(result.params) == 50
+              @test haskey(result.summaries, :conc)
+
+              println("Population simulation tests passed")
+            end
+          '
+
+  test-sensitivity:
+    name: Sensitivity Analysis Tests
+    runs-on: ubuntu-latest
+    needs: [julia-core-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install dependencies
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: Test sensitivity analysis
+        run: |
+          julia --project=packages/core -e '
+            using NeoPKPD
+            using Test
+
+            @testset "Sensitivity Analysis" begin
+              params = OneCompIVBolusParams(5.0, 50.0)
+              doses = [DoseEvent(0.0, 100.0)]
+              spec = ModelSpec(OneCompIVBolus(), "sens_test", params, doses)
+
+              grid = SimGrid(0.0, 24.0, collect(0.0:1.0:24.0))
+              solver = SolverSpec(:Tsit5, 1e-10, 1e-12, 10_000_000)
+
+              pert = Perturbation(RelativePerturbation(), :CL, 0.1)
+              plan = PerturbationPlan("sens_test", [pert])
+              result = run_sensitivity(spec, grid, solver; plan=plan, observation=:conc)
+
+              @test result.plan.name == "sens_test"
+              @test result.observation == :conc
+              @test length(result.base_metric_series) == length(grid.saveat)
+              @test length(result.pert_metric_series) == length(grid.saveat)
+              @test result.metrics.max_abs_delta >= 0
+
+              println("Sensitivity analysis tests passed")
+            end
+          '
+
+  # ===========================================================================
+  # Stage 4: Golden Validation & Integration
+  # ===========================================================================
+
+  golden-validation:
+    name: Golden Artifact Validation
+    runs-on: ubuntu-latest
+    needs: [julia-core-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install packages
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: Run golden validation
+        run: |
+          julia validation/scripts/run_golden_validation.jl
+
+      - name: Verify artifact schema
+        run: |
+          julia --project=packages/core -e '
+            using NeoPKPD
+            using JSON3
+
+            # Check all golden artifacts have correct schema version
+            golden_dir = "validation/golden"
+            for f in readdir(golden_dir)
+              endswith(f, ".json") || continue
+              artifact = JSON3.read(read(joinpath(golden_dir, f), String))
+              @assert haskey(artifact, :semantics_fingerprint) "Missing fingerprint in $f"
+              println("✓ $f")
+            end
+            println("All golden artifacts have valid schema")
+          '
+
+  cli-tests:
+    name: CLI Integration Tests
+    runs-on: ubuntu-latest
+    needs: [julia-core-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install CLI
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+          julia -e '
+            using Pkg
+            Pkg.activate("packages/cli")
+            Pkg.develop(path="packages/core")
+            Pkg.instantiate()
+          '
+          chmod +x packages/cli/bin/neopkpd
+
+      - name: Test CLI version
+        run: |
+          ./packages/cli/bin/neopkpd version
+
+      - name: Test CLI help
+        run: |
+          ./packages/cli/bin/neopkpd help
+
+      - name: Test CLI replay
+        run: |
+          ./packages/cli/bin/neopkpd replay --artifact validation/golden/pk_iv_bolus.json
+
+      - name: Test CLI validate-golden
+        run: |
+          ./packages/cli/bin/neopkpd validate-golden
+
+      - name: CLI smoke test
+        run: |
+          validation/scripts/smoke_cli.sh
+
+  # ===========================================================================
+  # Stage 5: Python Integration Tests
+  # ===========================================================================
+
+  python-integration:
+    name: Python Integration Tests
+    runs-on: ubuntu-latest
+    needs: [julia-core-tests, python-unit-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+          cache-dependency-path: packages/python/pyproject.toml
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install dependencies
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov pytest-timeout
+          cd packages/python && pip install -e ".[all]"
+
+      - name: Run simulation tests
+        run: |
+          cd packages/python
+          python -m pytest tests/test_simulate.py -v --tb=short --timeout=300
+
+      - name: Run NCA tests
+        run: |
+          cd packages/python
+          python -m pytest tests/test_nca.py -v --tb=short --timeout=300
+
+      - name: Run trial tests
+        run: |
+          cd packages/python
+          python -m pytest tests/test_trial.py -v --tb=short --timeout=300
+
+      - name: Run replay tests
+        run: |
+          cd packages/python
+          python -m pytest tests/test_replay.py -v --tb=short --timeout=300
+
+      - name: Run trial_core Julia integration tests
+        run: |
+          cd packages/python
+          python -m pytest tests/test_trial_core.py -v --tb=short --timeout=300
+        continue-on-error: true
+
+      - name: Run VPC Julia integration tests
+        run: |
+          cd packages/python
+          python -m pytest tests/test_vpc.py -v --tb=short --timeout=300
+        continue-on-error: true
+
+      - name: Run all Python tests with coverage
+        run: |
+          cd packages/python
+          # Skip Julia integration tests in coverage run to avoid segfaults from JIT recompilation
+          python -m pytest tests/ -v --tb=short --timeout=600 --cov=neopkpd --cov-report=xml \
+            --ignore=tests/test_trial_core.py --ignore=tests/test_vpc.py || true
+        continue-on-error: true
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v4
+        with:
+          files: packages/python/coverage.xml
+          flags: python
+          fail_ci_if_error: false
+        continue-on-error: true
+
+  python-viz-tests:
+    name: Python Visualization Tests
+    runs-on: ubuntu-latest
+    needs: [python-integration]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install dependencies
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+          pip install pytest matplotlib plotly
+          cd packages/python && pip install -e ".[viz]"
+
+      - name: Test visualization imports
+        run: |
+          python -c "
+          from neopkpd import viz
+          print('Backend:', viz.get_backend())
+          print('Available:', viz.available_backends())
+
+          # Test all viz functions exist
+          assert hasattr(viz, 'plot_conc_time')
+          assert hasattr(viz, 'plot_vpc')
+          assert hasattr(viz, 'plot_goodness_of_fit')
+          assert hasattr(viz, 'plot_estimation_summary')
+          assert hasattr(viz, 'plot_sensitivity')
+          assert hasattr(viz, 'plot_sensitivity_tornado')
+          print('All visualization functions available')
+          "
+
+  # ===========================================================================
+  # Stage 6: Use Case Validation
+  # ===========================================================================
+
+  use-case-validation:
+    name: Use Case Validation
+    runs-on: ubuntu-latest
+    needs: [golden-validation, python-integration]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install packages
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: FIH Dose Exploration
+        run: |
+          if [ -f "docs/examples/use_cases/fih_dose_exploration/run_and_validate.sh" ]; then
+            chmod +x docs/examples/use_cases/fih_dose_exploration/run_and_validate.sh
+            docs/examples/use_cases/fih_dose_exploration/run_and_validate.sh
+          else
+            echo "Skipping: script not found"
+          fi
+        continue-on-error: true
+
+      - name: PKPD Biomarker Turnover
+        run: |
+          if [ -f "docs/examples/use_cases/pkpd_biomarker_turnover/run_and_validate.sh" ]; then
+            chmod +x docs/examples/use_cases/pkpd_biomarker_turnover/run_and_validate.sh
+            docs/examples/use_cases/pkpd_biomarker_turnover/run_and_validate.sh
+          else
+            echo "Skipping: script not found"
+          fi
+        continue-on-error: true
+
+  real-world-validation:
+    name: Real-World Data Validation
+    runs-on: ubuntu-latest
+    needs: [golden-validation]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install packages
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: Theophylline Single Dose
+        run: |
+          if [ -f "docs/examples/real_world_validation/datasets/theophylline_theo_sd/run_and_validate.sh" ]; then
+            chmod +x docs/examples/real_world_validation/datasets/theophylline_theo_sd/run_and_validate.sh
+            docs/examples/real_world_validation/datasets/theophylline_theo_sd/run_and_validate.sh
+          fi
+        continue-on-error: true
+
+      - name: Theophylline Multiple Dose
+        run: |
+          if [ -f "docs/examples/real_world_validation/datasets/theophylline_theo_md/run_and_validate.sh" ]; then
+            chmod +x docs/examples/real_world_validation/datasets/theophylline_theo_md/run_and_validate.sh
+            docs/examples/real_world_validation/datasets/theophylline_theo_md/run_and_validate.sh
+          fi
+        continue-on-error: true
+
+      - name: Warfarin PKPD
+        run: |
+          if [ -f "docs/examples/real_world_validation/datasets/warfarin_nlmixr2data/run_and_validate.sh" ]; then
+            chmod +x docs/examples/real_world_validation/datasets/warfarin_nlmixr2data/run_and_validate.sh
+            docs/examples/real_world_validation/datasets/warfarin_nlmixr2data/run_and_validate.sh
+          fi
+        continue-on-error: true
+
+  # ===========================================================================
+  # Stage 7: Documentation
+  # ===========================================================================
+
+  docs-build:
+    name: Documentation Build
+    runs-on: ubuntu-latest
+    needs: [lint-python]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: 'pip'
+
+      - name: Install documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material pymdown-extensions
+          if [ -f docs/requirements.txt ]; then
+            pip install -r docs/requirements.txt
+          fi
+
+      - name: Check documentation links
+        run: |
+          # Verify all doc files exist
+          for doc in models estimation population nca vpc trial data import visualization sensitivity cli python; do
+            if [ -f "docs/${doc}.md" ]; then
+              echo "✓ docs/${doc}.md exists"
+            else
+              echo "⚠ docs/${doc}.md missing"
+            fi
+          done
+
+      - name: Build documentation
+        run: |
+          mkdocs build --strict
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation
+          path: site/
+          retention-days: 7
+
+  deploy-docs:
+    name: Deploy Documentation to GitHub Pages
+    runs-on: ubuntu-latest
+    needs: [docs-build]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material pymdown-extensions
+          if [ -f docs/requirements.txt ]; then
+            pip install -r docs/requirements.txt
+          fi
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy to GitHub Pages
+        run: mkdocs gh-deploy --force
+
+  # ===========================================================================
+  # Stage 8: Version & Release Checks
+  # ===========================================================================
+
+  version-check:
+    name: Version Consistency Check
+    runs-on: ubuntu-latest
+    needs: [julia-core-tests]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: julia-actions/setup-julia@v2
+        with:
+          version: ${{ env.JULIA_VERSION }}
+
+      - uses: julia-actions/cache@v2
+
+      - name: Install dependencies
+        run: |
+          julia -e 'using Pkg; Pkg.activate("packages/core"); Pkg.instantiate()'
+
+      - name: Check version consistency
+        run: |
+          julia --project=packages/core -e '
+            using NeoPKPD
+
+            println("NeoPKPD Version: ", NEOPKPD_VERSION)
+            println("Event Semantics: ", EVENT_SEMANTICS_VERSION)
+            println("Solver Semantics: ", SOLVER_SEMANTICS_VERSION)
+            println("Artifact Schema: ", ARTIFACT_SCHEMA_VERSION)
+
+            # Verify all versions are valid semver
+            for v in [NEOPKPD_VERSION, EVENT_SEMANTICS_VERSION, SOLVER_SEMANTICS_VERSION, ARTIFACT_SCHEMA_VERSION]
+              parts = split(v, ".")
+              @assert length(parts) == 3 "Invalid version: $v"
+              for p in parts
+                @assert tryparse(Int, p) !== nothing "Invalid version part: $p in $v"
+              end
+            end
+
+            println("All versions valid")
+          '
+
+  # ===========================================================================
+  # Final Summary
+  # ===========================================================================
+
+  ci-complete:
+    name: CI Complete
+    runs-on: ubuntu-latest
+    needs:
+      - lint-python
+      - python-unit-tests
+      - julia-core-tests
+      - test-infusion
+      - test-population
+      - test-sensitivity
+      - golden-validation
+      - cli-tests
+      - python-integration
+      - python-viz-tests
+      - use-case-validation
+      - real-world-validation
+      - docs-build
+      - version-check
+    if: always()
+
+    steps:
+      - name: Check all jobs
+        run: |
+          echo "============================================="
+          echo "           CI PIPELINE SUMMARY               "
+          echo "============================================="
+          echo ""
+          echo "Stage 1 - Fast Checks:"
+          echo "  Python Lint:          ${{ needs.lint-python.result }}"
+          echo "  Python Unit Tests:    ${{ needs.python-unit-tests.result }}"
+          echo ""
+          echo "Stage 2 - Julia Core:"
+          echo "  Julia Core Tests:     ${{ needs.julia-core-tests.result }}"
+          echo ""
+          echo "Stage 3 - Feature Tests:"
+          echo "  IV Infusion:          ${{ needs.test-infusion.result }}"
+          echo "  Population:           ${{ needs.test-population.result }}"
+          echo "  Sensitivity:          ${{ needs.test-sensitivity.result }}"
+          echo ""
+          echo "Stage 4 - Integration:"
+          echo "  Golden Validation:    ${{ needs.golden-validation.result }}"
+          echo "  CLI Tests:            ${{ needs.cli-tests.result }}"
+          echo ""
+          echo "Stage 5 - Python Integration:"
+          echo "  Python Integration:   ${{ needs.python-integration.result }}"
+          echo "  Visualization Tests:  ${{ needs.python-viz-tests.result }}"
+          echo ""
+          echo "Stage 6 - Use Cases:"
+          echo "  Use Case Validation:  ${{ needs.use-case-validation.result }}"
+          echo "  Real-World Data:      ${{ needs.real-world-validation.result }}"
+          echo ""
+          echo "Stage 7 - Documentation:"
+          echo "  Docs Build:           ${{ needs.docs-build.result }}"
+          echo ""
+          echo "Stage 8 - Version:"
+          echo "  Version Check:        ${{ needs.version-check.result }}"
+          echo ""
+          echo "============================================="
+
+          # Fail if any critical job failed
+          FAILED=0
+
+          if [[ "${{ needs.julia-core-tests.result }}" == "failure" ]]; then
+            echo "❌ CRITICAL: Julia core tests failed"
+            FAILED=1
+          fi
+
+          if [[ "${{ needs.golden-validation.result }}" == "failure" ]]; then
+            echo "❌ CRITICAL: Golden validation failed"
+            FAILED=1
+          fi
+
+          if [[ "${{ needs.cli-tests.result }}" == "failure" ]]; then
+            echo "❌ CRITICAL: CLI tests failed"
+            FAILED=1
+          fi
+
+          if [[ "${{ needs.python-integration.result }}" == "failure" ]]; then
+            echo "❌ CRITICAL: Python integration tests failed"
+            FAILED=1
+          fi
+
+          if [[ "${{ needs.docs-build.result }}" == "failure" ]]; then
+            echo "❌ CRITICAL: Documentation build failed"
+            FAILED=1
+          fi
+
+          if [[ $FAILED -eq 1 ]]; then
+            echo ""
+            echo "❌ CI FAILED - Critical jobs did not pass"
+            exit 1
+          fi
+
+          echo ""
+          echo "✅ CI PASSED - All critical checks succeeded"

@@ -1,0 +1,277 @@
+site_name: NeoPKPD
+site_url: https://shramish2057.github.io/NeoPKPD/
+site_description: Transparent, validated pharmacokinetics and pharmacodynamics modeling infrastructure
+site_author: NeoPKPD contributors
+
+repo_name: shramish2057/NeoPKPD
+repo_url: https://github.com/shramish2057/NeoPKPD
+edit_uri: edit/main/docs/
+
+theme:
+  name: material
+  logo: assets/logo.png
+  favicon: assets/favicon.png
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.path
+    - navigation.top
+    - navigation.indexes
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.copy
+    - content.code.annotate
+    - content.code.select
+  palette:
+    - scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  font:
+    text: Inter
+    code: JetBrains Mono
+
+nav:
+  - Home: index.md
+
+  - Introduction:
+    - intro/index.md
+    - Key Features: intro/features.md
+    - Architecture: intro/architecture.md
+    - Getting Started: intro/getting-started.md
+
+  - Docs Julia:
+    - julia/index.md
+    - Tutorial: julia/tutorial.md
+    - Models:
+      - julia/models/index.md
+      - Pharmacokinetic Models:
+        - One-Compartment IV Bolus: julia/models/pk/onecomp-iv-bolus.md
+        - One-Compartment Oral: julia/models/pk/onecomp-oral.md
+        - Two-Compartment IV: julia/models/pk/twocomp-iv.md
+        - Two-Compartment Oral: julia/models/pk/twocomp-oral.md
+        - Three-Compartment IV: julia/models/pk/threecomp-iv.md
+        - Transit Absorption: julia/models/pk/transit-absorption.md
+        - Michaelis-Menten: julia/models/pk/michaelis-menten.md
+        - TMDD: julia/models/pk/tmdd.md
+        - Parallel Absorption: julia/models/pk/parallel-absorption.md
+        - Enterohepatic Recirculation: julia/models/pk/enterohepatic.md
+        - Autoinduction: julia/models/pk/autoinduction.md
+      - Pharmacodynamic Models:
+        - Direct Emax: julia/models/pd/direct-emax.md
+        - Sigmoid Emax: julia/models/pd/sigmoid-emax.md
+        - Effect Compartment: julia/models/pd/effect-compartment.md
+        - Indirect Response: julia/models/pd/indirect-response.md
+        - Transit Compartment PD: julia/models/pd/transit-pd.md
+        - Disease Progression: julia/models/pd/disease-progression.md
+        - Tolerance Models: julia/models/pd/tolerance.md
+    - Population Modeling:
+      - julia/population/index.md
+      - Inter-Individual Variability: julia/population/iiv.md
+      - Inter-Occasion Variability: julia/population/iov.md
+      - Covariate Models: julia/population/covariates.md
+      - Residual Error Models: julia/population/residual-error.md
+    - Non-Compartmental Analysis:
+      - julia/nca/index.md
+      - Exposure Metrics: julia/nca/exposure-metrics.md
+      - Terminal Phase Analysis: julia/nca/terminal-phase.md
+      - Bioequivalence: julia/nca/bioequivalence.md
+      - Population NCA: julia/nca/population-nca.md
+      - Multiple Dose: julia/nca/multiple-dose.md
+    - Parameter Estimation:
+      - julia/estimation/index.md
+      - FOCE-I Method: julia/estimation/foce.md
+      - SAEM Algorithm: julia/estimation/saem.md
+      - Laplacian: julia/estimation/laplacian.md
+      - Diagnostics: julia/estimation/diagnostics.md
+      - Bootstrap Analysis: julia/estimation/bootstrap.md
+      - Model Comparison: julia/estimation/comparison.md
+    - Visual Predictive Check:
+      - julia/vpc/index.md
+      - Standard VPC: julia/vpc/standard.md
+      - Prediction-Corrected VPC: julia/vpc/pcvpc.md
+      - Stratified VPC: julia/vpc/stratified.md
+    - Model Import:
+      - julia/import/index.md
+      - NONMEM: julia/import/nonmem.md
+      - Monolix: julia/import/monolix.md
+      - CDISC Data: julia/import/cdisc.md
+    - Clinical Trials:
+      - julia/trial/index.md
+      - Parallel Design: julia/trial/parallel.md
+      - Crossover Design: julia/trial/crossover.md
+      - Dose Escalation: julia/trial/dose-escalation.md
+      - Power Analysis: julia/trial/power.md
+
+  - Docs Python:
+    - python/index.md
+    - Tutorial: python/tutorial.md
+    - Models:
+      - python/models/index.md
+      - Pharmacokinetic Models:
+        - IV Bolus: python/models/pk/iv-bolus.md
+        - Oral First-Order: python/models/pk/oral.md
+        - Two-Compartment IV: python/models/pk/twocomp-iv.md
+        - Two-Compartment Oral: python/models/pk/twocomp-oral.md
+        - Three-Compartment: python/models/pk/threecomp.md
+        - Transit Absorption: python/models/pk/transit.md
+        - Michaelis-Menten: python/models/pk/michaelis-menten.md
+        - TMDD: python/models/pk/tmdd.md
+        - Parallel Absorption: python/models/pk/parallel-absorption.md
+        - Enterohepatic Recirculation: python/models/pk/enterohepatic.md
+        - Autoinduction: python/models/pk/autoinduction.md
+      - Pharmacodynamic Models:
+        - Direct Emax: python/models/pd/direct-emax.md
+        - Sigmoid Emax: python/models/pd/sigmoid-emax.md
+        - Effect Compartment: python/models/pd/effect-compartment.md
+        - Indirect Response: python/models/pd/indirect-response.md
+        - Transit Compartment PD: python/models/pd/transit-pd.md
+        - Disease Progression: python/models/pd/disease-progression.md
+        - Tolerance Models: python/models/pd/tolerance.md
+    - Population Modeling:
+      - python/population/index.md
+      - Population IV Bolus: python/population/iv-bolus.md
+      - Population Oral: python/population/oral.md
+      - Covariates: python/population/covariates.md
+    - Non-Compartmental Analysis:
+      - python/nca/index.md
+      - run_nca Function: python/nca/run-nca.md
+      - NCA Configuration: python/nca/config.md
+      - Population NCA: python/nca/population.md
+      - Bioequivalence: python/nca/bioequivalence.md
+    - Clinical Trials:
+      - python/trial/index.md
+      - Study Designs: python/trial/designs.md
+      - Dosing Regimens: python/trial/dosing.md
+      - Virtual Population: python/trial/population.md
+      - Power Analysis: python/trial/power.md
+    - Visual Predictive Check:
+      - python/vpc/index.md
+      - Binning Strategies: python/vpc/binning.md
+      - BLQ Handling: python/vpc/blq.md
+    - Parameter Estimation:
+      - python/estimation/index.md
+      - FOCE-I Method: python/estimation/foce.md
+      - SAEM Algorithm: python/estimation/saem.md
+      - Laplacian: python/estimation/laplacian.md
+      - Diagnostics: python/estimation/diagnostics.md
+      - Bootstrap Analysis: python/estimation/bootstrap.md
+      - Model Comparison: python/estimation/comparison.md
+    - Visualization:
+      - python/viz/index.md
+      - Backends & Themes: python/viz/backends.md
+      - PK Plots: python/viz/pk.md
+      - NCA Plots: python/viz/nca.md
+      - PKPD Plots: python/viz/pkpd.md
+      - VPC Plots: python/viz/vpc.md
+      - Estimation Diagnostics: python/viz/estimation.md
+      - Bootstrap Plots: python/viz/bootstrap.md
+      - Sensitivity Plots: python/viz/sensitivity.md
+      - Population Plots: python/viz/population.md
+      - Trial Plots: python/viz/trial.md
+    - Data Import:
+      - python/data/index.md
+      - CDISC Formats: python/data/cdisc.md
+      - NONMEM Import: python/data/nonmem.md
+      - Monolix Import: python/data/monolix.md
+
+  - Examples:
+    - examples/README.md
+    - Quickstart: examples/quickstart/README.md
+    - Model Examples:
+      - examples/models/README.md
+      - PK Models:
+        - One-Compartment IV: examples/models/pk/01_onecomp_iv_bolus/README.md
+        - One-Compartment Oral: examples/models/pk/03_onecomp_oral/README.md
+        - Two-Compartment IV: examples/models/pk/04_twocomp_iv/README.md
+        - Transit Absorption: examples/models/pk/07_transit_absorption/README.md
+      - PKPD Models:
+        - Direct Emax: examples/models/pkpd/01_direct_emax/README.md
+        - Sigmoid Emax: examples/models/pkpd/02_sigmoid_emax/README.md
+        - Indirect Response: examples/models/pkpd/04_indirect_response/README.md
+    - Population Examples:
+      - examples/population/README.md
+    - NCA Examples:
+      - examples/nca/README.md
+    - Estimation Examples:
+      - examples/estimation/README.md
+    - VPC Examples:
+      - examples/vpc/README.md
+    - Trial Examples:
+      - examples/trial/README.md
+    - Visualization Examples:
+      - examples/visualization/README.md
+    - Import Examples:
+      - examples/import/README.md
+    - Real-World Validation:
+      - examples/real_world_validation/SOURCE.md
+      - Theophylline SD: examples/real_world_validation/studies/theophylline_theo_sd/README.md
+      - Warfarin PKPD: examples/real_world_validation/studies/warfarin_pkpd/README.md
+    - Use Cases:
+      - Theophylline Analysis: examples/use_cases/real_world_theophylline/README.md
+      - Bioequivalence Study: examples/use_cases/bioequivalence_study/README.md
+      - Population PKPD: examples/use_cases/population_pkpd_analysis/README.md
+      - NONMEM Migration: examples/use_cases/nonmem_migration/README.md
+
+  - Concepts:
+    - Architecture: architecture.md
+    - Semantics: semantics.md
+    - Reproducibility: reproducibility.md
+
+  - Reference:
+    - CLI Reference: cli.md
+    - Glossary: reference/glossary.md
+
+plugins:
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.arithmatex:
+      generic: true
+  - tables
+  - footnotes
+  - toc:
+      permalink: true
+      toc_depth: 3
+
+extra_javascript:
+  - https://unpkg.com/mermaid@10/dist/mermaid.esm.min.mjs
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+extra_css:
+  - stylesheets/extra.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/shramish2057/NeoPKPD
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/neopkpd/

@@ -1,0 +1,5 @@
+Dataset: theo_md (theophylline multiple-dose)
+Source package: nlmixr2data
+License: GPL (>= 3)
+
+This dataset is redistributed under GPL (>= 3), consistent with nlmixr2data.

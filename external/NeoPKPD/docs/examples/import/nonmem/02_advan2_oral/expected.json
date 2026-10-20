@@ -1,0 +1,21 @@
+{
+  "model": "OneCompOralFirstOrder",
+  "params": {
+    "Ka": 1.5,
+    "CL": 5.0,
+    "V": 50.0
+  },
+  "iiv": {
+    "kind": "LogNormalIIV",
+    "omegas": {
+      "Ka": 0.16,
+      "CL": 0.09,
+      "V": 0.0625
+    }
+  },
+  "error": {
+    "kind": "Combined",
+    "additive": 0.5,
+    "proportional": 0.10
+  }
+}

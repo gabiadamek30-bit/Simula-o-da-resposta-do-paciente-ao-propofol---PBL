@@ -1,0 +1,82 @@
+% Comprehensive NeoPKPD 6-Platform Benchmark Results
+% Commercial platforms marked with * use reference data from literature
+\begin{table}[!ht]
+\centering
+\small
+\caption{Comprehensive benchmark comparison across 6 pharmacometrics platforms}
+\label{tab:6platform_benchmarks}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{Category} & \textbf{Platform} & \textbf{Mean (ms)} & \textbf{Std} & \textbf{vs NeoPKPD} \\
+\midrule
+analysis & NeoPKPD (Julia) & 0.22 & 0.10 & 1.00x \\
+\midrule
+estimation & Monolix* & 19.25 & 4.17 & 0.00x \\
+ & NONMEM* & 205.55 & 45.38 & 0.00x \\
+ & NeoPKPD (Julia) & 0.00 & 0.00 & 1.00x \\
+ & Pumas* & 0.02 & 0.01 & 0.16x \\
+ & mrgsolve & 0.11 & 0.03 & 0.03x \\
+ & nlmixr2 & 4.05 & 0.89 & 0.00x \\
+\midrule
+nca & Monolix* & 0.15 & 0.03 & 1.12x \\
+ & NONMEM* & 19.83 & 4.43 & 0.01x \\
+ & NeoPKPD (Julia) & 0.17 & 0.12 & 1.00x \\
+ & Pumas* & 0.01 & 0.00 & 14.54x \\
+ & mrgsolve & 0.20 & 0.06 & 0.84x \\
+ & nlmixr2 & 0.14 & 0.03 & 1.18x \\
+\midrule
+pd & Monolix* & 2.55 & 0.52 & 0.00x \\
+ & NONMEM* & 943.08 & 137.28 & 0.00x \\
+ & NeoPKPD (Julia) & 0.01 & 0.01 & 1.00x \\
+ & Pumas* & 0.02 & 0.01 & 0.53x \\
+ & mrgsolve & 0.62 & 0.10 & 0.02x \\
+ & nlmixr2 & 23.14 & 3.02 & 0.00x \\
+\midrule
+pk & Monolix* & 4.54 & 0.90 & 0.13x \\
+ & NONMEM* & 1264.22 & 196.07 & 0.00x \\
+ & NeoPKPD (Julia) & 0.60 & 0.92 & 1.00x \\
+ & Pumas* & 0.69 & 0.18 & 0.86x \\
+ & mrgsolve & 0.77 & 0.15 & 0.77x \\
+ & nlmixr2 & 31.25 & 28.97 & 0.02x \\
+\midrule
+pkpd & Monolix* & 4.45 & 0.92 & 0.07x \\
+ & NONMEM* & 1485.65 & 220.60 & 0.00x \\
+ & NeoPKPD (Julia) & 0.31 & 0.31 & 1.00x \\
+ & Pumas* & 0.48 & 0.14 & 0.65x \\
+ & mrgsolve & 0.79 & 0.18 & 0.40x \\
+ & nlmixr2 & 21.16 & 1.30 & 0.01x \\
+\midrule
+population & Monolix* & 64.93 & 13.24 & 0.59x \\
+ & NONMEM* & 12464.62 & 1870.42 & 0.00x \\
+ & NeoPKPD (Julia) & 38.39 & 11.82 & 1.00x \\
+ & Pumas* & 44.81 & 11.66 & 0.86x \\
+ & mrgsolve & 11.34 & 1.20 & 3.38x \\
+ & nlmixr2 & 40.17 & 6.38 & 0.96x \\
+\midrule
+sensitivity & Monolix* & 12.30 & 2.52 & 0.03x \\
+ & NONMEM* & 4265.45 & 637.90 & 0.00x \\
+ & NeoPKPD (Julia) & 0.37 & 0.14 & 1.00x \\
+ & Pumas* & 0.73 & 0.20 & 0.51x \\
+ & mrgsolve & 1.43 & 0.31 & 0.26x \\
+ & nlmixr2 & 64.83 & 8.17 & 0.01x \\
+\midrule
+tmdd & NeoPKPD (Julia) & 0.00 & 0.00 & — \\
+\midrule
+trial & Monolix* & 968.18 & 202.18 & 0.02x \\
+ & NONMEM* & 95425.51 & 14843.17 & 0.00x \\
+ & NeoPKPD (Julia) & 14.90 & 3.98 & 1.00x \\
+ & Pumas* & 44.88 & 9.72 & 0.33x \\
+ & mrgsolve & 67.19 & 15.18 & 0.22x \\
+ & nlmixr2 & 2218.19 & 434.18 & 0.01x \\
+\midrule
+vpc & Monolix* & 1823.22 & 354.72 & 0.01x \\
+ & NONMEM* & 142925.72 & 26493.23 & 0.00x \\
+ & NeoPKPD (Julia) & 24.35 & 6.62 & 1.00x \\
+ & Pumas* & 97.22 & 20.38 & 0.25x \\
+ & mrgsolve & 149.23 & 27.72 & 0.16x \\
+ & nlmixr2 & 4403.23 & 819.73 & 0.01x \\
+\midrule
+\bottomrule
+\multicolumn{5}{l}{\footnotesize *Commercial platforms use reference data from published literature}
+\end{tabular}
+\end{table}

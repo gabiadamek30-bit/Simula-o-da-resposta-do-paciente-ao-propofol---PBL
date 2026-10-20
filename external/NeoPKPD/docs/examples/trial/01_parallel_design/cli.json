@@ -1,0 +1,31 @@
+{
+  "trial": {
+    "name": "Phase 2 Efficacy Study",
+    "design": {
+      "type": "parallel",
+      "n_arms": 2,
+      "randomization_ratio": [0.5, 0.5]
+    },
+    "arms": [
+      {
+        "name": "Placebo",
+        "regimen": {"frequency": "qd", "dose": 0.0, "duration_days": 28},
+        "n": 50,
+        "placebo": true
+      },
+      {
+        "name": "Active",
+        "regimen": {"frequency": "qd", "dose": 100.0, "duration_days": 28},
+        "n": 50,
+        "placebo": false
+      }
+    ],
+    "duration_days": 28,
+    "enrollment_rate": 5.0,
+    "dropout": {"random_rate_per_day": 0.005},
+    "compliance": {"mean_compliance": 0.90, "pattern": "decay"},
+    "pk_sampling_times": [0, 1, 2, 4, 8, 12, 24],
+    "endpoints": ["pk_exposure"],
+    "seed": 42
+  }
+}
