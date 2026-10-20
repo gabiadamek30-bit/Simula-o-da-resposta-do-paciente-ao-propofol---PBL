@@ -1,0 +1,27 @@
+{
+  "model": {
+    "kind": "TransitAbsorption",
+    "name": "transit_absorption_example",
+    "params": {
+      "N": 5,
+      "Ktr": 1.5,
+      "Ka": 0.8,
+      "CL": 10.0,
+      "V": 100.0
+    },
+    "doses": [
+      {"time": 0.0, "amount": 500.0}
+    ]
+  },
+  "grid": {
+    "t0": 0.0,
+    "t1": 24.0,
+    "saveat": [0.0, 0.5, 1.0, 1.5, 2.0, 3.0, 4.0, 6.0, 8.0, 10.0, 12.0, 16.0, 20.0, 24.0]
+  },
+  "solver": {
+    "alg": "Tsit5",
+    "reltol": 1e-10,
+    "abstol": 1e-12,
+    "maxiters": 10000000
+  }
+}

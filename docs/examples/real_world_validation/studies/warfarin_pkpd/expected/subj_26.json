@@ -1,0 +1,146 @@
+{
+  "artifact_schema_version": "1.0.0",
+  "execution_mode": "pkpd_coupled",
+  "semantics_fingerprint": {
+    "artifact_schema_version": "1.0.0",
+    "solver_semantics_version": "1.0.0",
+    "event_semantics_version": "1.0.0"
+  },
+  "pd_spec": {
+    "kind": "IndirectResponseTurnover",
+    "name": "warfarin_pd_turnover",
+    "output_observation": "response",
+    "params": {
+      "Imax": 0.8,
+      "Kin": 10.0,
+      "Kout": 0.5,
+      "IC50": 2.0,
+      "R0": 20.0
+    },
+    "input_observation": "conc"
+  },
+  "model_spec": {
+    "kind": "OneCompOralFirstOrder",
+    "name": "warfarin_pk_subj_26",
+    "doses": [
+      {
+        "amount": 112.0,
+        "time": 0.0
+      }
+    ],
+    "params": {
+      "V": 35.0,
+      "CL": 3.0,
+      "Ka": 1.2
+    }
+  },
+  "solver": {
+    "reltol": 1.0e-10,
+    "maxiters": 10000000,
+    "abstol": 1.0e-12,
+    "alg": "Tsit5"
+  },
+  "grid": {
+    "t0": 0.0,
+    "saveat": [
+      0.0,
+      24.0,
+      36.0,
+      48.0,
+      72.0,
+      96.0,
+      120.0
+    ],
+    "t1": 120.0
+  },
+  "result": {
+    "observations": {
+      "response": [
+        20.0,
+        24.200016349811776,
+        21.515121943876,
+        20.542933438992883,
+        20.0694719198554,
+        20.00888101991918,
+        20.00113517973188
+      ],
+      "conc": [
+        0.0,
+        0.4404827144216765,
+        0.15748020616535893,
+        0.05630190362005782,
+        0.007196433021109586,
+        0.0009198383162232894,
+        0.00011757248702765775
+      ]
+    },
+    "t": [
+      0.0,
+      24.0,
+      36.0,
+      48.0,
+      72.0,
+      96.0,
+      120.0
+    ],
+    "metadata": {
+      "solver_alg": "Tsit5",
+      "pk_dose_schedule": [
+        [
+          0.0,
+          112.0
+        ]
+      ],
+      "model": "Coupled PKPD",
+      "solver_semantics_version": "1.0.0",
+      "pk_kind": "OneCompOralFirstOrder",
+      "engine_version": "0.1.0",
+      "abstol": 1.0e-12,
+      "event_semantics_version": "1.0.0",
+      "dataset": "nlmixr2data::warfarin",
+      "reltol": 1.0e-10,
+      "deterministic_output_grid": true,
+      "subject_id": 26,
+      "pd_kind": "IndirectResponseTurnover",
+      "rmse_pk": 6.877029021660076,
+      "pd_params": {
+        "Imax": 0.8,
+        "Kin": 10.0,
+        "Kout": 0.5,
+        "IC50": 2.0,
+        "R0": 20.0
+      },
+      "rmse_pd": 30.65427283550529,
+      "pd_output_observation": "response"
+    },
+    "states": {
+      "A_gut": [
+        112.0,
+        3.4796757965476e-11,
+        1.9397109978119178e-17,
+        1.0813101444794793e-23,
+        3.360363284895145e-36,
+        1.0442963400199632e-48,
+        3.246280133639547e-61
+      ],
+      "R": [
+        20.0,
+        24.200016349811776,
+        21.515121943876,
+        20.542933438992883,
+        20.0694719198554,
+        20.00888101991918,
+        20.00113517973188
+      ],
+      "A_central": [
+        0.0,
+        15.416895004758679,
+        5.511807215787563,
+        1.9705666267020236,
+        0.2518751557388355,
+        0.03219434106781513,
+        0.004115037045968021
+      ]
+    }
+  }
+}

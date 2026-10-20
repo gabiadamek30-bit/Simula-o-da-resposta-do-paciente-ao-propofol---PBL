@@ -1,0 +1,45 @@
+% Comprehensive NeoPKPD Benchmark Results
+\begin{table}[!ht]
+\centering
+\small
+\caption{Comprehensive benchmark comparison (mean time in ms)}
+\label{tab:comprehensive_benchmarks}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+\textbf{Category} & \textbf{Platform} & \textbf{Mean (ms)} & \textbf{Std} & \textbf{Speedup} \\
+\midrule
+analysis & NeoPKPD (Julia) & 0.22 & 0.10 & 1.00x \\
+\midrule
+estimation & NeoPKPD (Julia) & 0.00 & 0.00 & 1.00x \\
+\midrule
+nca & NeoPKPD (Julia) & 0.17 & 0.12 & 1.00x \\
+ & mrgsolve & 0.20 & 0.06 & 0.84x \\
+ & nlmixr2 & 0.14 & 0.03 & 1.18x \\
+\midrule
+pd & NeoPKPD (Julia) & 0.01 & 0.01 & 1.00x \\
+ & mrgsolve & 0.62 & 0.10 & 0.02x \\
+ & nlmixr2 & 23.14 & 3.02 & 0.00x \\
+\midrule
+pk & NeoPKPD (Julia) & 0.60 & 0.92 & 1.00x \\
+ & mrgsolve & 0.77 & 0.15 & 0.77x \\
+ & nlmixr2 & 31.25 & 28.97 & 0.02x \\
+\midrule
+pkpd & NeoPKPD (Julia) & 0.31 & 0.31 & 1.00x \\
+ & mrgsolve & 0.79 & 0.18 & 0.40x \\
+ & nlmixr2 & 21.16 & 1.30 & 0.01x \\
+\midrule
+population & NeoPKPD (Julia) & 38.39 & 11.82 & 1.00x \\
+ & mrgsolve & 11.34 & 1.20 & 3.38x \\
+ & nlmixr2 & 40.17 & 6.38 & 0.96x \\
+\midrule
+sensitivity & NeoPKPD (Julia) & 0.37 & 0.14 & 1.00x \\
+ & mrgsolve & 1.43 & 0.31 & 0.26x \\
+ & nlmixr2 & 64.83 & 8.17 & 0.01x \\
+\midrule
+tmdd & NeoPKPD (Julia) & 0.00 & 0.00 & — \\
+\midrule
+trial & NeoPKPD (Julia) & 0.00 & 0.00 & 1.00x \\
+\midrule
+\bottomrule
+\end{tabular}
+\end{table}

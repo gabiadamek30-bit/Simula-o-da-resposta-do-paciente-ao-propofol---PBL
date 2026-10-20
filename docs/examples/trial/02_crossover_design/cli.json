@@ -1,0 +1,28 @@
+{
+  "trial": {
+    "name": "Bioavailability Crossover Study",
+    "design": {
+      "type": "crossover_2x2",
+      "washout_duration": 7.0
+    },
+    "sequences": [
+      {
+        "name": "Sequence_AB",
+        "n": 12,
+        "treatments": ["Reference", "Test"]
+      },
+      {
+        "name": "Sequence_BA",
+        "n": 12,
+        "treatments": ["Test", "Reference"]
+      }
+    ],
+    "treatments": {
+      "Reference": {"type": "single", "dose": 100.0},
+      "Test": {"type": "single", "dose": 100.0}
+    },
+    "pk_sampling_times": [0, 0.25, 0.5, 1, 2, 4, 6, 8, 12, 24],
+    "endpoints": ["cmax", "auc_0_inf"],
+    "seed": 42
+  }
+}

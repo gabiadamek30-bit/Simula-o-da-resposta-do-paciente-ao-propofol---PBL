@@ -1,0 +1,36 @@
+{
+  "model": {
+    "kind": "OneCompIVBolus",
+    "name": "pk_for_sigmoid_emax",
+    "params": {
+      "CL": 5.0,
+      "V": 50.0
+    },
+    "doses": [
+      {"time": 0.0, "amount": 100.0}
+    ]
+  },
+  "pd": {
+    "kind": "SigmoidEmax",
+    "name": "sigmoid_emax_pd",
+    "params": {
+      "E0": 0.0,
+      "Emax": 100.0,
+      "EC50": 1.0,
+      "gamma": 2.0
+    },
+    "input_observation": "conc",
+    "output_observation": "effect"
+  },
+  "grid": {
+    "t0": 0.0,
+    "t1": 24.0,
+    "saveat": [0.0, 0.5, 1.0, 2.0, 4.0, 6.0, 8.0, 12.0, 18.0, 24.0]
+  },
+  "solver": {
+    "alg": "Tsit5",
+    "reltol": 1e-10,
+    "abstol": 1e-12,
+    "maxiters": 10000000
+  }
+}

@@ -1,0 +1,98 @@
+[
+  {
+    "rmse_fixed": 1.6094316654052485,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 2.1481014110779393,
+    "id": 1,
+    "dose_mg": 319.992,
+    "wt": 79.6
+  },
+  {
+    "rmse_fixed": 1.0382839103472405,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 1.0370894347795037,
+    "id": 2,
+    "dose_mg": 318.56,
+    "wt": 72.4
+  },
+  {
+    "rmse_fixed": 0.5625293762381964,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 0.5635313033864466,
+    "id": 3,
+    "dose_mg": 319.365,
+    "wt": 70.5
+  },
+  {
+    "rmse_fixed": 0.8842137480415498,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 0.8615176652122846,
+    "id": 4,
+    "dose_mg": 319.88,
+    "wt": 72.7
+  },
+  {
+    "rmse_fixed": 1.4388236083263097,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 1.2601894776821445,
+    "id": 5,
+    "dose_mg": 319.956,
+    "wt": 54.6
+  },
+  {
+    "rmse_fixed": 1.7739619922923724,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 1.1531933626413904,
+    "id": 6,
+    "dose_mg": 320.0,
+    "wt": 80.0
+  },
+  {
+    "rmse_fixed": 1.5607592064379294,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 1.9292685114771875,
+    "id": 7,
+    "dose_mg": 319.77,
+    "wt": 64.6
+  },
+  {
+    "rmse_fixed": 0.9993928151544695,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 0.9698038974196234,
+    "id": 8,
+    "dose_mg": 319.365,
+    "wt": 70.5
+  },
+  {
+    "rmse_fixed": 1.7819997351579029,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 2.1740186596243953,
+    "id": 9,
+    "dose_mg": 267.84,
+    "wt": 86.4
+  },
+  {
+    "rmse_fixed": 1.7528242851817761,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 1.830592601163001,
+    "id": 10,
+    "dose_mg": 320.1,
+    "wt": 58.2
+  },
+  {
+    "rmse_fixed": 1.3512835299956758,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 1.5700384432984762,
+    "id": 11,
+    "dose_mg": 319.8,
+    "wt": 65.0
+  },
+  {
+    "rmse_fixed": 1.243862077326524,
+    "dose_unit_rule": "AMT_as_mg",
+    "rmse_wt_scaled": 1.1379417121662845,
+    "id": 12,
+    "dose_mg": 320.65,
+    "wt": 60.5
+  }
+]

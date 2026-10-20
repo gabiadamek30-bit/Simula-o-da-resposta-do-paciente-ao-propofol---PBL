@@ -1,0 +1,30 @@
+[
+  {
+    "scenario": "qd_100mg",
+    "emin_mean": 100.0,
+    "with_iov": false,
+    "time_below_80pct_mean": 0.0,
+    "suppression_auc_mean": 0.0
+  },
+  {
+    "scenario": "qd_100mg",
+    "emin_mean": 100.0,
+    "with_iov": true,
+    "time_below_80pct_mean": 0.0,
+    "suppression_auc_mean": 0.0
+  },
+  {
+    "scenario": "bid_50mg",
+    "emin_mean": 100.0,
+    "with_iov": false,
+    "time_below_80pct_mean": 0.0,
+    "suppression_auc_mean": 0.0
+  },
+  {
+    "scenario": "bid_50mg",
+    "emin_mean": 100.0,
+    "with_iov": true,
+    "time_below_80pct_mean": 0.0,
+    "suppression_auc_mean": 0.0
+  }
+]

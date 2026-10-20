@@ -1,0 +1,101 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "neopkpd"
+version = "0.1.1"
+description = "Transparent, validated pharmacokinetics and pharmacodynamics modeling infrastructure"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+authors = [
+    {name = "Shramish Kafle", email = "shramish4@gmail.com"}
+]
+maintainers = [
+    {name = "Shramish Kafle", email = "shramish4@gmail.com"}
+]
+keywords = [
+    "pharmacokinetics",
+    "pharmacodynamics",
+    "pkpd",
+    "pharmacometrics",
+    "nlme",
+    "population-pk",
+    "clinical-trials",
+    "nca",
+    "vpc",
+    "simulation",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+    "Typing :: Typed",
+]
+dependencies = [
+    "juliacall>=0.9.20",
+    "numpy>=1.20",
+    "scipy>=1.10",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "black",
+    "ruff",
+    "mypy",
+]
+viz = [
+    "matplotlib>=3.5",
+    "plotly>=5.0",
+]
+all = [
+    "neopkpd[dev,viz]",
+]
+
+[project.urls]
+Homepage = "https://github.com/shramish2057/openpkpd"
+Documentation = "https://shramish2057.github.io/NeoPKPD/"
+Repository = "https://github.com/shramish2057/openpkpd"
+Changelog = "https://github.com/shramish2057/openpkpd/blob/main/packages/python/CHANGELOG.md"
+Issues = "https://github.com/shramish2057/openpkpd/issues"
+
+[tool.setuptools]
+package-dir = {"" = "."}
+
+[tool.setuptools.packages.find]
+where = ["."]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true

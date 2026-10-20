@@ -1,0 +1,113 @@
+# =============================================================================
+# NeoPKPD .gitignore
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Julia
+# -----------------------------------------------------------------------------
+*.jl.cov
+*.jl.mem
+*.jl.*.cov
+Manifest.toml
+deps/build.log
+
+# -----------------------------------------------------------------------------
+# Python
+# -----------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+ENV/
+env/
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+pip-wheel-metadata/
+*.whl
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# -----------------------------------------------------------------------------
+# Build & Distribution
+# -----------------------------------------------------------------------------
+build/
+dist/
+site/
+*.tar.gz
+*.zip
+
+# -----------------------------------------------------------------------------
+# IDE & Editors
+# -----------------------------------------------------------------------------
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.settings/
+*.sublime-project
+*.sublime-workspace
+.claude/
+
+# -----------------------------------------------------------------------------
+# OS Files
+# -----------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# -----------------------------------------------------------------------------
+# Documentation Build
+# -----------------------------------------------------------------------------
+site/
+docs/_build/
+
+# Example & Test Outputs (keep .keep files)
+docs/examples/output/*
+!docs/examples/output/.keep
+docs/examples/use_cases/*/output/*
+!docs/examples/use_cases/*/output/.keep
+docs/examples/real_world_validation/studies/*/output/*
+!docs/examples/real_world_validation/studies/*/output/.keep
+
+
+# -----------------------------------------------------------------------------
+# Temporary & Generated Files
+# -----------------------------------------------------------------------------
+*.log
+*.tmp
+*.temp
+*.bak
+*.orig
+# Test artifacts (don't commit generated test files)
+*.test.json
+test_output/
+
+# -----------------------------------------------------------------------------
+# Secrets & Local Config (never commit)
+# -----------------------------------------------------------------------------
+.env
+.env.*
+*.pem
+*.key
+secrets/

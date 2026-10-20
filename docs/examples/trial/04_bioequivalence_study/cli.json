@@ -1,0 +1,22 @@
+{
+  "be_trial": {
+    "name": "Generic Bioequivalence Study",
+    "design": {
+      "type": "bioequivalence",
+      "n_periods": 2,
+      "n_sequences": 2,
+      "washout_duration": 7.0,
+      "bioequivalence_limits": [0.80, 1.25],
+      "parameters": ["cmax", "auc_0_inf"],
+      "regulatory_guidance": "fda"
+    },
+    "n_per_sequence": 12,
+    "treatments": {
+      "Reference": {"type": "single", "dose": 100.0},
+      "Test": {"type": "single", "dose": 100.0}
+    },
+    "pk_sampling_times": [0, 0.25, 0.5, 1, 1.5, 2, 3, 4, 6, 8, 12, 24],
+    "intra_subject_cv": 0.25,
+    "seed": 42
+  }
+}
